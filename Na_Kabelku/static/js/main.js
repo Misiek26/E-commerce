@@ -129,7 +129,7 @@
 			priceInputMin = document.getElementById('price-min');
 
 	priceInputMax.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
+		updatePriceSlider($(this).parent() , this.value);
 	});
 
 	priceInputMin.addEventListener('change', function(){
@@ -138,31 +138,38 @@
 
 	function updatePriceSlider(elem , value) {
 		if ( elem.hasClass('price-min') ) {
-			console.log('min')
 			priceSlider.noUiSlider.set([value, null]);
 		} else if ( elem.hasClass('price-max')) {
-			console.log('max')
 			priceSlider.noUiSlider.set([null, value]);
 		}
 	}
 
 	// Price Slider
 	var priceSlider = document.getElementById('price-slider');
+	var currentUrl = window.location.href;
+	var url = new URL(currentUrl);
+	const params = new URLSearchParams(url.search);
+	let max_price = params.get('max-price');
+	let min_price = params.get('min-price');
+
+	max_price = max_price ? max_price : 5999;
+	min_price = min_price ? min_price : 1;
+
 	if (priceSlider) {
 		noUiSlider.create(priceSlider, {
-			start: [1, 999],
+			start: [min_price, max_price],
 			connect: true,
 			step: 1,
 			range: {
 				'min': 1,
-				'max': 999
+				'max': 5999
 			}
 		});
-
 		priceSlider.noUiSlider.on('update', function( values, handle ) {
 			var value = values[handle];
-			handle ? priceInputMax.value = value : priceInputMin.value = value
+			handle ? priceInputMax.value = value : priceInputMin.value = value;
 		});
 	}
+
 
 })(jQuery);

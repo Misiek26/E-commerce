@@ -1151,6 +1151,20 @@ textarea.input {
   color: #FFF;
 }
 
+.save-filter-btn{
+  border: 2px solid transparent;
+  height: 40px;
+  margin: 20px 0;
+  padding: 0 30px;
+  background-color: #D10024;
+  color: #FFF;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 40px;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+} 
+
 /*----------------------------*\
 	Products slick
 \*----------------------------*/
