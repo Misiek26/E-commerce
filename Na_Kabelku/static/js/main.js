@@ -176,42 +176,41 @@
 		});
 	}
 
+	// Timer to friday
+	function getNextFridayAtNine() {
+		const now = new Date();
+		const dayOfWeek = now.getDay();
+		const nextFriday = new Date(now);
 
-	// // Timer to friday
-	// function getNextFridayAtNine() {
-	// 	const now = new Date();
-	// 	const dayOfWeek = now.getDay();
-	// 	const nextFriday = new Date(now);
-	// 	console.log(now);
+		let daysUntilFriday = (5 - dayOfWeek + 7) % 7;
 
-	// 	let daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+		if (dayOfWeek === 5 && now.getHours() >= 9) {
+			daysUntilFriday += 7;
+		}
 
-	// 	if (dayOfWeek === 5 && now.getHours() >= 9) {
-	// 		daysUntilFriday += 7;
-	// 	}
+		nextFriday.setDate(now.getDate() + daysUntilFriday);
+		nextFriday.setHours(9, 0, 0, 0);
 
-	// 	nextFriday.setDate(now.getDate() + daysUntilFriday);
-	// 	nextFriday.setHours(9, 0, 0, 0);  // Set time to 9:00 AM
+		return nextFriday;
+	}
 
-	// 	return nextFriday;
-	// }
+	function updateTimer() {
+		const now = new Date();
+		const nextFriday = getNextFridayAtNine();
 
-	// function updateTimer() {
-	// 	const now = new Date();
-	// 	const nextFriday = getNextFridayAtNine();
+		const timeDiff = nextFriday - now;
 
-	// 	const timeDiff = nextFriday - now;
+		const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+		const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+		const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-	// 	const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-	// 	const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	// 	const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-	// 	const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+		document.getElementById("days").innerHTML = days;
+		document.getElementById("hours").innerHTML = hours;
+		document.getElementById("minutes").innerHTML = minutes;
+		document.getElementById("seconds").innerHTML = seconds;
+	}
 
-	// 	console.log(days)
-
-	// 	document.getElementById("days").innerHTML = "siema";
-	// }
-
-	// setInterval(updateTimer, 1000);
-
+	updateTimer();
+	setInterval(updateTimer, 1000);
 })(jQuery);

@@ -37,6 +37,7 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     banner = models.ImageField(blank=True)
     quantity = models.PositiveIntegerField(default=0)
+    sold_quantity = models.PositiveBigIntegerField(default=0)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', default="2")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products', null=True)
