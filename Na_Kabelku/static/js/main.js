@@ -111,7 +111,7 @@
 
 		down.on('click', function () {
 			var value = parseInt($input.val()) - 1;
-			value = value < 1 ? 1 : value;
+			value = value < 0 ? 0 : value;
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
@@ -119,6 +119,11 @@
 
 		up.on('click', function () {
 			var value = parseInt($input.val()) + 1;
+			var maxValue = parseInt($input.attr('max'));
+
+			if(value > maxValue)
+				value = maxValue;
+
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
@@ -171,5 +176,42 @@
 		});
 	}
 
+
+	// // Timer to friday
+	// function getNextFridayAtNine() {
+	// 	const now = new Date();
+	// 	const dayOfWeek = now.getDay();
+	// 	const nextFriday = new Date(now);
+	// 	console.log(now);
+
+	// 	let daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+
+	// 	if (dayOfWeek === 5 && now.getHours() >= 9) {
+	// 		daysUntilFriday += 7;
+	// 	}
+
+	// 	nextFriday.setDate(now.getDate() + daysUntilFriday);
+	// 	nextFriday.setHours(9, 0, 0, 0);  // Set time to 9:00 AM
+
+	// 	return nextFriday;
+	// }
+
+	// function updateTimer() {
+	// 	const now = new Date();
+	// 	const nextFriday = getNextFridayAtNine();
+
+	// 	const timeDiff = nextFriday - now;
+
+	// 	const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+	// 	const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	// 	const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+	// 	const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+	// 	console.log(days)
+
+	// 	document.getElementById("days").innerHTML = "siema";
+	// }
+
+	// setInterval(updateTimer, 1000);
 
 })(jQuery);

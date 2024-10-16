@@ -2,9 +2,19 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from .models import Product, Category, Brand
 from django.db.models import Count
+import re
 
 # Create your views here.
 def products_list(request, p=1):
+    path = request.path
+    path_matches = bool(re.match(r'^/products/[a-z]+/.*$', path))
+    path_matches_paginator = bool(re.match(r'^/products/[0-9]+/.*$', path))
+
+    if path_matches_paginator:
+        path_paginator = '/' + '/'.join(path.strip('/').split('/')[:-1]) + '/'
+    else:
+        path_paginator = request.path
+
     categories = Category.objects.all().order_by('name').annotate(product_count=Count('products'))
     brands = Brand.objects.all().order_by('name').annotate(product_count=Count('products'))
 
@@ -31,11 +41,60 @@ def products_list(request, p=1):
     page_obj = paginator.page(page_number)
 
     context = {
+        'path_matches' : path_matches,
         'products' : page_obj, 
         'categories' : categories, 
         'brands' : brands,
         'selected_categories' : selected_categories,
-        'selected_brands' : selected_brands
+        'selected_brands' : selected_brands,
+        'path_paginator' : path_paginator
+    }
+
+    return render(request, 'products/products_list.html', context)
+
+def products_list_category(request, category, p=1):
+    path = request.path
+    path_matches = bool(re.match(r'^/products/[a-z]+/.*$', path))
+    path_matches_paginator = bool(re.match(r'^/products/[a-z]+/[0-9]+/.*$', path))
+
+    if path_matches_paginator:
+        path_paginator = '/' + '/'.join(path.strip('/').split('/')[:-1]) + '/'
+    else:
+        path_paginator = request.path
+
+
+    categories = Category.objects.all().order_by('name')
+    category_id = Category.objects.get(slug = category).id
+
+    path_category = path.strip('/').split('/')[1]
+    brands = Brand.objects.filter(products__category = category_id).order_by('name').annotate(product_count=Count('products'))
+    
+    sort_by = request.GET.get('sort_by', '-created_date')
+    min_price = float(request.GET.get('min-price', '1.00'))
+    max_price = float(request.GET.get('max-price', '9999.00'))
+    selected_brands = request.GET.getlist('brand')
+    selected_brands = [int(brands) for brands in selected_brands]
+
+    product_filter = Product.objects.filter(price__range=(min_price, max_price))
+    product_filter = product_filter.filter(category=category_id)
+
+    if selected_brands:
+        product_filter = product_filter.filter(brand__in=selected_brands)
+
+    products = product_filter.order_by(sort_by)
+    
+    paginator = Paginator(products, 2)
+    page_number = request.GET.get('page', p)
+    page_obj = paginator.page(page_number)
+
+    context = {
+        'path_matches' : path_matches,
+        'products' : page_obj, 
+        'brands' : brands,
+        'categories' : categories,
+        'selected_brands' : selected_brands,
+        'path_paginator' : path_paginator,
+        'path_category' : path_category
     }
 
     return render(request, 'products/products_list.html', context)

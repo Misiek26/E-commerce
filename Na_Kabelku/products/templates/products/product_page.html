@@ -14,17 +14,11 @@
                             <img src="{{product.banner.url}}" alt="">
                         </div>
 
-                        <div class="product-preview">
-                            <img src="{{product.banner.url}}" alt="">
-                        </div>
-
-                        <div class="product-preview">
-                            <img src="./img/product06.png" alt="">
-                        </div>
-
-                        <div class="product-preview">
-                            <img src="./img/product08.png" alt="">
-                        </div>
+                        {% for image in product.images.all %}
+                            <div class="product-preview">
+                                <img src="{{image.image.url}}" alt="{{image.alt_text}}">
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <!-- /Product main img -->
@@ -33,20 +27,14 @@
                 <div class="col-md-2  col-md-pull-5">
                     <div id="product-imgs">
                         <div class="product-preview">
-                            <img src="./img/product01.png" alt="">
+                            <img src="{{product.banner.url}}" alt="">
                         </div>
-
-                        <div class="product-preview">
-                            <img src="./img/product03.png" alt="">
-                        </div>
-
-                        <div class="product-preview">
-                            <img src="./img/product06.png" alt="">
-                        </div>
-
-                        <div class="product-preview">
-                            <img src="./img/product08.png" alt="">
-                        </div>
+                        
+                        {% for image in product.images.all %}
+                            <div class="product-preview">
+                                <img src="{{image.image.url}}" alt="{{image.alt_text}}">
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <!-- /Product thumb imgs -->
@@ -72,7 +60,7 @@
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 
                         <div class="product-options">
-                            <label>
+                            {% comment %} <label>
                                 Size
                                 <select class="input-select">
                                     <option value="0">X</option>
@@ -83,39 +71,39 @@
                                 <select class="input-select">
                                     <option value="0">Red</option>
                                 </select>
-                            </label>
+                            </label> {% endcomment %}
                         </div>
 
                         <div class="add-to-cart">
                             <div class="qty-label">
-                                Qty
+                                Szt
                                 <div class="input-number">
-                                    <input type="number">
+                                    <input type="number" value="0" min="0" max="{{product.quantity}}">
                                     <span class="qty-up">+</span>
                                     <span class="qty-down">-</span>
                                 </div>
                             </div>
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> dodaj do koszyka</button>
+                            <div style="color:#8d99ae">Dostępnych {{product.quantity}} szt</div>
                         </div>
 
-                        <ul class="product-btns">
+                        {% comment %} <ul class="product-btns">
                             <li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
                             <li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
-                        </ul>
+                        </ul> {% endcomment %}
 
                         <ul class="product-links">
-                            <li>Category:</li>
-                            <li><a href="#">Headphones</a></li>
-                            <li><a href="#">Accessories</a></li>
+                            <li>Kategoria:</li>
+                            <li><a href="{{product.category.id}}">{{product.category}}</a></li>
                         </ul>
 
-                        <ul class="product-links">
+                        {% comment %} <ul class="product-links">
                             <li>Share:</li>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
                             <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
                             <li><a href="#"><i class="fa fa-envelope"></i></a></li>
-                        </ul>
+                        </ul> {% endcomment %}
 
                     </div>
                 </div>

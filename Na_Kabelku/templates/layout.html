@@ -170,13 +170,28 @@
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#">Hot Deals</a></li>
-						<li><a href="{% url 'products:list' %}">Categories</a></li>
-						<li><a href="laptop-1">Laptops</a></li>
-						<li><a href="#">Smartphones</a></li>
-						<li><a href="#">Cameras</a></li>
-						<li><a href="#">Accessories</a></li>
+						{% if request.path == "/"%}
+							<li class="active"><a href="/">Strona Główna</a></li>
+							<li><a href="{% url 'products:list' %}">Produkty</a></li>
+						{% elif request.path == '/products/' %}
+							<li><a href="/">Strona Główna</a></li>
+							<li class="active"><a href="{% url 'products:list' %}">Produkty</a></li>
+						{% else %}
+							<li><a href="/">Strona Główna</a></li>
+							<li><a href="{% url 'products:list' %}">Produkty</a></li>
+						{% endif %}
+
+						{% for category in categories %}
+							{% if category.slug in request.path %}
+								<li class="active">
+									<a href="{% url 'products:list_category' category=category.slug %}">{{ category.name }}</a>
+								</li>
+							{% else %}
+								<li>
+									<a href="{% url 'products:list_category' category=category.slug %}">{{ category.name }}</a>
+								</li>
+							{% endif %}
+						{% endfor %}
 					</ul>
 					<!-- /NAV -->
 				</div>
