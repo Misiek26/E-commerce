@@ -117,8 +117,9 @@
                             <label>
                                 Sort By:
                                 <select class="input-select" name="sort_by" onchange="this.form.submit()">
+                                    <option value="-created_date" {% if request.GET.sort_by == "-created_date" %}selected{% endif %}>domyślnie</option>
                                     <option value="title" {% if request.GET.sort_by == "title" %}selected{% endif %}>nazwa</option>
-                                    <option value="price" {% if request.GET.sort_by == "price" %}selected{% endif %}>cena</option>
+                                    <option value="discounted_price" {% if request.GET.sort_by == "discounted_price" %}selected{% endif %}>cena</option>
                                 </select>
                             </label>
 
@@ -146,14 +147,22 @@
                                     <div class="product-img">
                                         <img src="{{product.banner.url}}" alt="{{product.banner.title}}">
                                         <div class="product-label">
-                                            <span class="sale">-30%</span>
-                                            <span class="new">NEW</span>
+                                            {% if product.discount_percentage > 0.00 %}
+                                                <span class="sale">-{{ product.discount_percentage|floatformat:0 }}%</span>
+                                            {% endif %}
+                                            {% if product.is_new == True %}
+                                                <span class="new">NEW</span>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="product-body">
                                         <p class="product-category">{{product.category.name}}</p>
                                         <h3 class="product-name"><a href="{% url 'products:page' slug=product.slug %}">{{product.title}}</a></h3>
-                                        <h4 class="product-price">{{product.price}} <del class="product-old-price">$990.00</del></h4>
+                                        {% if product.discount_percentage > 0.00 %}
+                                            <h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h4>
+                                        {% else %}
+                                            <h4 class="product-price">{{product.discounted_price}}zł</h4>
+                                        {% endif %}
                                         <div class="product-rating">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>

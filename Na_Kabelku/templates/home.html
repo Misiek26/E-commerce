@@ -58,14 +58,22 @@
 										<div class="product-img">
 											<img src="{{product.banner.url}}" alt="{{product.name}}">
 											<div class="product-label">
-												<span class="sale">-30%</span>
-												<span class="new">NEW</span>
+												{% if product.discount_percentage > 0.00 %}
+													<span class="sale">-{{product.discount_percentage|floatformat:0}}%</span>
+												{% endif %}
+												{% if product.is_new == True %}
+													<span class="new">New</span>
+												{% endif %}
 											</div>
 										</div>
 										<div class="product-body">
 											<p class="product-category">{{product.category.name}}</p>
 											<h3 class="product-name"><a href="/products/{{product.slug}}">{{product.title}}</a></h3>
-											<h4 class="product-price">{{product.price}}zł <del class="product-old-price">$990.00</del></h4>
+											{% if product.discount_percentage > 0.00 %}
+                                            	<h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h4>
+											{% else %}
+												<h4 class="product-price">{{product.discounted_price}}zł</h4>
+											{% endif %}
 											{% comment %} <div class="product-rating">
 												<i class="fa fa-star"></i>
 												<i class="fa fa-star"></i>
@@ -177,14 +185,22 @@
 										<div class="product-img">
 											<img src="{{product.banner.url}}" alt="{{product.name}}">
 											<div class="product-label">
-												<span class="sale">-30%</span>
-												<span class="new">NEW</span>
+												{% if product.discount_percentage > 0.00 %}
+													<span class="sale">-{{product.discount_percentage|floatformat:0}}%</span>
+												{% endif %}
+												{% if product.is_new == True %}
+													<span class="new">New</span>
+												{% endif %}
 											</div>
 										</div>
 										<div class="product-body">
 											<p class="product-category">{{product.category.name}}</p>
 											<h3 class="product-name"><a href="/products/{{product.slug}}">{{product.title}}</a></h3>
-											<h4 class="product-price">{{product.price}}zł <del class="product-old-price">$990.00</del></h4>
+											{% if product.discount_percentage > 0.00 %}
+                                            	<h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h4>
+											{% else %}
+												<h4 class="product-price">{{product.discounted_price}}zł</h4>
+											{% endif %}
 											{% comment %} <div class="product-rating">
 												<i class="fa fa-star"></i>
 												<i class="fa fa-star"></i>
@@ -247,7 +263,7 @@
 									</div>
 									<div class="product-body">
 										<h3 class="product-name"><a href="/products/{{product.slug}}">{{product.title}}</a></h3>
-										<h4 class="product-price">{{product.price}}zł <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}</del></h4>
 										<p class="product-category">Kupiło {{product.sold_quantity}} osób</p>
 									</div>
 								</div>

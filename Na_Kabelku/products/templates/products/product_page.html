@@ -1,6 +1,31 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/">Strona Główna</a></li>
+                        <li><a href="{{product.category.slug}}/">{{product.category.name}}</a></li>
+                        <li class="active">{{product.title}}</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /BREADCRUMB -->
+    <input type="hidden" id="price-max">
+	<input type="hidden" id="price-min">
+    <input type="hidden" id="days">
+	<input type="hidden" id="hours">
+    <input type="hidden" id="minutes">
+	<input type="hidden" id="seconds">
     <!-- SECTION -->
     <div class="section">
         <!-- container -->
@@ -11,7 +36,7 @@
                 <div class="col-md-5 col-md-push-2">
                     <div id="product-main-img">
                         <div class="product-preview">
-                            <img src="{{product.banner.url}}" alt="">
+                            <img src="{{product.banner.url}}" alt="{{product.name}}">
                         </div>
 
                         {% for image in product.images.all %}
@@ -27,7 +52,7 @@
                 <div class="col-md-2  col-md-pull-5">
                     <div id="product-imgs">
                         <div class="product-preview">
-                            <img src="{{product.banner.url}}" alt="">
+                            <img src="{{product.banner.url}}" alt="{{prodcut.name}}">
                         </div>
                         
                         {% for image in product.images.all %}
@@ -54,11 +79,10 @@
                             <a class="review-link" href="#">10 Review(s) | Add your review</a>
                         </div>
                         <div>
-                            <h3 class="product-price">{{product.price}}zł <del class="product-old-price">$990.00</del></h3>
-                            <span class="product-available">In Stock</span>
+                            <h3 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h3>
+                            <span class="product-available">Dostępny</span>
                         </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-
+                        <p>{{product.description}}</p>
                         <div class="product-options">
                             {% comment %} <label>
                                 Size
@@ -126,7 +150,7 @@
                             <div id="tab1" class="tab-pane fade in active">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                        <p>{{product.description}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +160,7 @@
                             <div id="tab2" class="tab-pane fade in">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                        <p>{{product.details}}</p>
                                     </div>
                                 </div>
                             </div>

@@ -101,4 +101,10 @@ def products_list_category(request, category, p=1):
 
 def product_page(request, slug):
     product = Product.objects.get(slug=slug)
-    return render(request, 'products/product_page.html', {'product' : product})
+    categories = Category.objects.all().order_by('name')
+
+    context = {
+        'product' : product,
+        'categories' : categories,
+    }
+    return render(request, 'products/product_page.html', context)
