@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    User Login
+{% endblock %}
+
+{% block content %}
+    <h1>User Login</h1>
+        
+    {% csrf_token %}
+
+    {% for user in users %}
+    <div class="row">
+        <div class="text-center">
+            <p>{{user.phone}}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}
