@@ -2089,6 +2089,41 @@ textarea.input {
   color:red;
 }
 
+.activate-link{
+  color: blue;
+}
+
+.activate-link:hover{
+  color: red;
+}
+
+.create_account{
+  margin-top:120px;
+}
+
+.create_account a{
+  color:rgb(47, 47, 186);
+}
+
+.create_account a:hover{
+  color:red;
+}
+
+.forgot-password{
+  margin-top: -10px;
+  text-align: center;
+  margin-left: -30px;
+}
+
+.forgot-password a{
+  color:rgb(47, 47, 186);
+  margin-left: 30px;
+}
+
+.forgot-password a:hover{
+  color:red;
+}
+
 /*----------------------------*\
 	Arrows
 \*----------------------------*/

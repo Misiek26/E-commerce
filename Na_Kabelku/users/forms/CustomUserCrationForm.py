@@ -9,7 +9,12 @@ class CustomUserCreationForm(UserCreationForm):
         required=True, 
         max_length=50, 
         label="Nazwa użytkownika", 
-        error_messages={'required': 'Proszę wprowadzić nazwę użytkownika.'},
+        error_messages={
+            'required': 'Nazwa użytkownika jest wymagana.',
+            'max_length': 'Nazwa użytkownika nie może przekraczać 50 znaków.',
+            'unique': 'Ten użytkownik już istnieje, proszę wybrać inną nazwę.',
+            'invalid': 'Nazwa użytkownika zawiera niedozwolone znaki.'
+            },
         widget=forms.TextInput(
         attrs={
             'placeholder': 'Nazwa użytkownika',
@@ -20,14 +25,18 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     email = forms.EmailField(
-        required=True, 
+        required=True,
         label="Email", 
-        error_messages={'required': 'Proszę wprowadzić poprawny adres email.', 'invalid': 'Proszę wprowadzić poprawny adres email.'},
+        error_messages={
+            'required': 'Proszę wprowadzić poprawny adres email.',
+            'invalid': 'Proszę wprowadzić poprawny adres email.',
+            'unique': 'Ten email jest już zajęty.',
+            },
         widget=forms.EmailInput(
             attrs={
                 'placeholder': 'Email',
                 'class': 'input',
-                'id': 'email-input'
+                'id': 'email-input',
             }
         ),
     )
@@ -39,7 +48,7 @@ class CustomUserCreationForm(UserCreationForm):
         error_messages={'required': 'Proszę wprowadzić imię.'},
         widget=forms.TextInput(
         attrs={
-            'placeholder': 'Nazwa użytkownika',
+            'placeholder': 'Imię',
             'class': 'input',
             'id': 'firstname-input'
         }
@@ -81,7 +90,10 @@ class CustomUserCreationForm(UserCreationForm):
 
     password2 = forms.CharField(
         label="Powtórz hasło",
-        error_messages={'required': 'Proszę powtórzyć hasło'},
+        error_messages={
+            'required': 'Proszę powtórzyć hasło',
+            'password_mismatch': 'Hasła muszą być takie same.',
+            },
         widget=forms.PasswordInput(
         attrs={
             'placeholder': 'Powtórz hasło',
@@ -89,6 +101,13 @@ class CustomUserCreationForm(UserCreationForm):
             'id': 'password2-input'
         }
         ),
+        validators=[
+            RegexValidator(
+                regex=r'^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})',
+                message="Hasła muszą być takie same.",
+            )
+
+        ]
     )
 
     phone = forms.CharField(
@@ -103,9 +122,14 @@ class CustomUserCreationForm(UserCreationForm):
             'id': 'phone-input',
             'pattern': '[0-9]{9}',
             'title': 'Wprowadź numer telefonu w formacie 123456789',
+            'unique': True,
         }
         ),
-        error_messages={'required': 'Wprowadź poprawny numer telefonu.', 'invalid': 'Wprowadź poprawny numer telefonu.',},
+        error_messages={
+            'required': 'Wprowadź poprawny numer telefonu.',
+            'invalid': 'Wprowadź poprawny numer telefonu.',
+            'unique': 'Podany numer jest już zajęty.'
+            },
         
     )
 
@@ -133,7 +157,7 @@ class CustomUserCreationForm(UserCreationForm):
             'placeholder': 'Kod pocztowy',
             'class': 'input',
             'id': 'zip-code-input',
-            'pattern': '^\d{2}-\d{3}$',
+            'pattern': r'^\d{2}-\d{3}$',
             'title': 'Wprowadź kod pocztowy w formacie 12-345',
         }
         ),
@@ -171,7 +195,7 @@ class CustomUserCreationForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        
+
         if commit:
             user.save()
             ClientProfile.objects.create(
@@ -184,12 +208,24 @@ class CustomUserCreationForm(UserCreationForm):
 
         return user
     
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
-
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        
         if password1 and password2 and password1 != password2:
-            self.add_error('confirm_password', "Hasła nie są identyczne.")
+            raise forms.ValidationError(
+                "Hasła muszą być takie same.",
+                code='password_mismatch',
+            )
+        return password2
+    
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
 
-        return cleaned_data
+        if ClientProfile.objects.filter(phone=phone).exists():
+            raise forms.ValidationError(
+                "Podany numer telefonu jest już zajęty.",
+                code='unique',
+            )
+        
+        return phone
