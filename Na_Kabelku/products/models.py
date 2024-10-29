@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Category(models.Model):
@@ -47,7 +48,6 @@ class Product(models.Model):
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', default="2")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products', null=True)
-    #author = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     
     def __str__(self):
         return self.title
@@ -71,6 +71,15 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Image for {self.product.title}"
     
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Dodał(a) {self.user.username} - Ocena: {self.rating}"
 
 '''
 class Attachment(DatetimeCreatedMixin, AuthorMixin):

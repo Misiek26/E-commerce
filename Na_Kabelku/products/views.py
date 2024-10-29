@@ -1,7 +1,11 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from .models import Product, Category, Brand
+from .models import Product, Category, Brand, Review
+from products.forms.ReviewForm import ReviewForm
 from django.db.models import Count
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import re
 
 # Create your views here.
@@ -99,12 +103,62 @@ def products_list_category(request, category, p=1):
 
     return render(request, 'products/products_list.html', context)
 
-def product_page(request, slug):
+def product_page(request, slug, p=1):
     product = Product.objects.get(slug=slug)
     categories = Category.objects.all().order_by('name')
+    reviews = Review.objects.filter(product = product).order_by('-created_at')
+
+    paginator = Paginator(reviews, 5)
+    page_number = request.GET.get('page', p)
+    page_obj = paginator.page(page_number)  
 
     context = {
         'product' : product,
         'categories' : categories,
+        'reviews' : page_obj,
+        'stars_range' : range(1,6),
+        'has_next': page_obj.has_next(),
     }
     return render(request, 'products/product_page.html', context)
+
+def load_reviews(request, slug, p=2):
+    product = Product.objects.get(slug=slug)
+    reviews = Review.objects.filter(product = product).order_by('-created_at')
+    paginator = Paginator(reviews, 5)
+    page_number = request.GET.get('page', p)
+    page_obj = paginator.page(page_number)  
+
+    reviews_data = []
+    for review in page_obj:
+        reviews_data.append({
+            'username': review.user.username,
+            'comment': review.comment,
+            'rating': review.rating,
+            'created_at': review.created_at.strftime('%d.%m.%Y')
+        })
+
+    context ={
+        'reviews_list' : reviews_data,
+        'has_next': page_obj.has_next(),
+    }
+    
+    return JsonResponse(context, safe=False)
+
+def add_review(request, product_id):
+    if request.method == 'POST':
+        product = Product.objects.get(id=product_id)
+        form = ReviewForm(request.POST, user=request.user)
+        if form.is_valid():
+            review = form.save(commit=False)
+            form.add_error("rating", "Dziękujemy za dodanie opinii.")
+            review.user = request.user
+            review.product = product
+            review.save()
+            return JsonResponse({
+                'success': True,
+                'username': review.user.username,
+                'rating': review.rating,
+                'comment': review.comment,
+                'created_at': review.created_at.strftime('%d.%m.%Y')
+            })
+    return JsonResponse({'success': False, 'errors': form.errors}, status=400)

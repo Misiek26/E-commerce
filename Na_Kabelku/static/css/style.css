@@ -2124,6 +2124,19 @@ textarea.input {
   color:red;
 }
 
+#load-more{
+  padding:10px 15px;
+  font-size:0.7em;
+  font-weight:600;
+}
+
+#load-more:hover{
+  background-color: white;
+  color:#D10024;
+  border: solid #D10024;
+  transition: 0.01s;
+}
+
 /*----------------------------*\
 	Arrows
 \*----------------------------*/

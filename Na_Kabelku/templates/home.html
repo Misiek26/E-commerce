@@ -68,7 +68,7 @@
 										</div>
 										<div class="product-body">
 											<p class="product-category">{{product.category.name}}</p>
-											<h3 class="product-name"><a href="/products/{{product.slug}}">{{product.title}}</a></h3>
+											<h3 class="product-name"><a href="/products/product/{{product.slug}}">{{product.title}}</a></h3>
 											{% if product.discount_percentage > 0.00 %}
                                             	<h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h4>
 											{% else %}
@@ -195,7 +195,7 @@
 										</div>
 										<div class="product-body">
 											<p class="product-category">{{product.category.name}}</p>
-											<h3 class="product-name"><a href="/products/{{product.slug}}">{{product.title}}</a></h3>
+											<h3 class="product-name"><a href="/products/product/{{product.slug}}">{{product.title}}</a></h3>
 											{% if product.discount_percentage > 0.00 %}
                                             	<h4 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h4>
 											{% else %}
