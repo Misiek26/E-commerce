@@ -6,6 +6,7 @@ from django.db.models import Count
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Avg
 import re
 
 # Create your views here.
@@ -107,6 +108,19 @@ def product_page(request, slug, p=1):
     product = Product.objects.get(slug=slug)
     categories = Category.objects.all().order_by('name')
     reviews = Review.objects.filter(product = product).order_by('-created_at')
+    reviews_count = reviews.count()
+
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+    average_rating_stars = round(average_rating)
+    average_rating = round(average_rating, 1)
+    rating_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    for review in reviews:
+        rating_counts[review.rating] += 1
+
+    rating_counts_percentage = [
+        (rating_counts[star] / reviews_count) * 100 if reviews_count > 0 else 0
+        for star in range(1, 6)
+    ]
 
     paginator = Paginator(reviews, 5)
     page_number = request.GET.get('page', p)
@@ -116,6 +130,11 @@ def product_page(request, slug, p=1):
         'product' : product,
         'categories' : categories,
         'reviews' : page_obj,
+        'reviews_count' : reviews_count,
+        'average_rating' : average_rating,
+        'average_rating_stars' : average_rating_stars,
+        'rating_counts': rating_counts,
+        'rating_counts_percentage' : rating_counts_percentage,
         'stars_range' : range(1,6),
         'has_next': page_obj.has_next(),
     }
@@ -127,6 +146,7 @@ def load_reviews(request, slug, p=2):
     paginator = Paginator(reviews, 5)
     page_number = request.GET.get('page', p)
     page_obj = paginator.page(page_number)  
+    reviews_count = reviews.count()
 
     reviews_data = []
     for review in page_obj:
@@ -139,6 +159,7 @@ def load_reviews(request, slug, p=2):
 
     context ={
         'reviews_list' : reviews_data,
+        'reviews_count' : reviews_count,
         'has_next': page_obj.has_next(),
     }
     

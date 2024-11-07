@@ -79,6 +79,20 @@ $(document).ready(function(){
                         $('#review-invalid-feedback > .invalid-feedback').remove();
                         var successHtml = '<div class="invalid-feedback" style="color:green;">Dziękujemy za dodanie opinii.</div>';
                         $('#review-invalid-feedback').append(successHtml);
+                        
+                        let len = location.href.split('/').length;
+                        let productSlug = location.href.split('/')[len-2];
+
+                        let reloadPage = $.ajax({
+                            url: `/products/product/${productSlug}/`,
+                            method: "GET",
+                            success: function(data) {
+                                let tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = data; 
+                                document.getElementById("rating").innerHTML = tempDiv.querySelector("#rating").innerHTML;
+                                document.getElementById("reviews-count-header").innerHTML = tempDiv.querySelector("#reviews-count-header").innerHTML;
+                            }
+                        });
                     }
                 },
                 error: function(xhr) {
@@ -102,3 +116,7 @@ $(document).ready(function(){
         }
     });
 });
+
+document.querySelector("#review-link").onclick = () => {
+    document.getElementById("tab3-link").click();
+}

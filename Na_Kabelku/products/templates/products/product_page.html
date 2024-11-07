@@ -76,11 +76,16 @@
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <a class="review-link" href="#">10 Review(s) | Add your review</a>
+                            <a class="review-link" href="#tab3" id="review-link">{{reviews_count}} Ocen(a) | Dodaj swoją opinię</a>
                         </div>
                         <div>
                             <h3 class="product-price">{{product.discounted_price}}zł <del class="product-old-price">{{product.price}}zł</del></h3>
-                            <span class="product-available">Dostępny</span>
+                            {% if product.quantity > 0%}
+                                <span class="product-available">Dostępny</span>
+                            {% else %}
+                                <span class="product-available">Niedostępny</span>
+                            {% endif %}
+
                         </div>
                         <p>{{product.description}}</p>
                         <div class="product-options">
@@ -138,9 +143,9 @@
                     <div id="product-tab">
                         <!-- product tab nav -->
                         <ul class="tab-nav">
-                            <li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Details</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+                            <li class="active"><a data-toggle="tab" href="#tab1">Opis produktu</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Parametry</a></li>
+                            <li><a data-toggle="tab" href="#tab3" id="tab3-link">Recenzje (<span id="reviews-count-header">{{reviews_count}}</span>)</a></li>
                         </ul>
                         <!-- /product tab nav -->
 
@@ -173,13 +178,15 @@
                                     <div class="col-md-3">
                                         <div id="rating">
                                             <div class="rating-avg">
-                                                <span>4.5</span>
+                                                <span>{{average_rating|floatformat:1}}</span>
                                                 <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
+                                                    {% for star in stars_range %}
+                                                        {% if forloop.counter <= average_rating_stars %}
+                                                            <i class="fa fa-star"></i>
+                                                        {% else %}
+                                                            <i class="fa fa-star-o empty"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                             <ul class="rating">
@@ -192,9 +199,9 @@
                                                         <i class="fa fa-star"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div style="width: 80%;"></div>
+                                                        <div style="width: {{rating_counts_percentage.4}}%;"></div>
                                                     </div>
-                                                    <span class="sum">3</span>
+                                                    <span class="sum" id="sum-stars-5">{{rating_counts.5}}</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -205,9 +212,9 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div style="width: 60%;"></div>
+                                                        <div style="width: {{rating_counts_percentage.3}}%;"></div>
                                                     </div>
-                                                    <span class="sum">2</span>
+                                                    <span class="sum" id="sum-stars-4">{{rating_counts.4}}</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -218,9 +225,9 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {{rating_counts_percentage.2}}%;"></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" id="sum-stars-3">{{rating_counts.3}}</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -231,9 +238,9 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {{rating_counts_percentage.1}}%;"></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" id="sum-stars-2">{{rating_counts.2}}</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -244,9 +251,9 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {{rating_counts_percentage.0}}%;"></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" id="sum-stars-1">{{rating_counts.1}}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -282,10 +289,12 @@
                                             {% if has_next %}
                                                 <button id="load-more" class="primary-btn">Pokaż więcej</button>
                                             {% else %}
-                                                <div class="review-body">
-                                                    <p></p>
-                                                    <p class="text-center">Brak opinii na temat tego produktu.</p>
-                                                </div>
+                                                {% if reviews_count == 0 %}
+                                                    <div class="review-body" id="reviews-blank">
+                                                        <p></p>
+                                                        <p class="text-center">Brak opinii na temat tego produktu.</p>
+                                                    </div>
+                                                {% endif %}
                                             {% endif %}
                                         </div>
                                     </div>
