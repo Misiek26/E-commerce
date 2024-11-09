@@ -36,7 +36,11 @@
     <div class="container">
         {% if path_matches %}
             <form method="GET" action="{% url 'products:list_category' category=path_category %}" id="filter-form">
-        {% else %}
+        {% elif path_matches_query%}
+            <form method="GET" action="{% url 'products:search_view' %}" id="filter-form">
+                <input type="hidden" name="query" value="{{query}}"/>
+                <input type="hidden" name="category_query" value="{{category_query_name}}"/>
+                {% else %}
             <form method="GET" action="{% url 'products:list' %}" id="filter-form">
         {% endif %}
             <!-- row -->
@@ -115,7 +119,7 @@
                         <div class="store-sort">
                             {% comment %} <form method="GET" action="{% url 'products:list' %}"> {% endcomment %}
                             <label>
-                                Sort By:
+                                Kolejność:
                                 <select class="input-select" name="sort_by" onchange="this.form.submit()">
                                     <option value="-created_date" {% if request.GET.sort_by == "-created_date" %}selected{% endif %}>domyślnie</option>
                                     <option value="title" {% if request.GET.sort_by == "title" %}selected{% endif %}>nazwa</option>

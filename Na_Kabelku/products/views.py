@@ -107,6 +107,9 @@ def products_list_category(request, category, p=1):
 def product_page(request, slug, p=1):
     product = Product.objects.get(slug=slug)
     categories = Category.objects.all().order_by('name')
+
+    related_products = Product.objects.filter(category = product.category).exclude(slug=slug)
+
     reviews = Review.objects.filter(product = product).order_by('-created_at')
     reviews_count = reviews.count()
 
@@ -129,6 +132,7 @@ def product_page(request, slug, p=1):
     context = {
         'product' : product,
         'categories' : categories,
+        'related_products' : related_products,
         'reviews' : page_obj,
         'reviews_count' : reviews_count,
         'average_rating' : average_rating,
@@ -183,3 +187,67 @@ def add_review(request, product_id):
                 'created_at': review.created_at.strftime('%d.%m.%Y')
             })
     return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+def search_view(request, p=1):
+    path = request.path
+    path_matches_query = bool(re.match(r'^/products/search/list/.*$', path))
+    path_matches_paginator = bool(re.match(r'^/products/search/list/[0-9]+/.*$', path))
+
+    if path_matches_paginator:
+        path_paginator = '/' + '/'.join(path.strip('/').split('/')[:-1]) + '/'
+    else:
+        path_paginator = request.path
+
+    categories = Category.objects.all().order_by('name').annotate(product_count=Count('products'))
+    brands = Brand.objects.all().order_by('name').annotate(product_count=Count('products'))
+    
+    category_query_name = request.GET.get('category_query', '')
+
+    category_id = None
+
+    if category_query_name != "all":
+        category_id = Category.objects.get(name=category_query_name).id
+
+    sort_by = request.GET.get('sort_by', '-created_date')
+    min_price = float(request.GET.get('min-price', '1.00'))
+    max_price = float(request.GET.get('max-price', '9999.00'))
+    selected_brands = request.GET.getlist('brand')
+    selected_brands = [int(brands) for brands in selected_brands]
+    selected_categories = request.GET.getlist('category') 
+    selected_categories = [int(cat) for cat in selected_categories]
+
+    product_filter = Product.objects.filter(price__range=(min_price, max_price))
+
+    query = ''
+
+    if 'query' in request.GET:
+        query = request.GET.get('query', '')
+        product_filter = Product.objects.filter(title__icontains=query, price__range=(min_price, max_price))
+        if category_id:
+            product_filter = product_filter.filter(category=category_id)
+    
+    if selected_categories:
+        product_filter = product_filter.filter(category__in=selected_categories)
+
+    if selected_brands:
+        product_filter = product_filter.filter(brand__in=selected_brands)
+
+    products = product_filter.order_by(sort_by)
+    
+    paginator = Paginator(products, 2)
+    page_number = request.GET.get('page', p)
+    page_obj = paginator.page(page_number)
+
+    context = {
+        'path_matches_query' : path_matches_query,
+        'products' : page_obj, 
+        'categories' : categories, 
+        'brands' : brands,
+        'selected_categories' : selected_categories,
+        'selected_brands' : selected_brands,
+        'path_paginator' : path_paginator,
+        'query' : query,
+        'category_query_name' : category_query_name,
+    }
+
+    return render(request, 'products/products_list.html', context)

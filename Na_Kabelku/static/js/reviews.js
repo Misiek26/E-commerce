@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    page = document.getElementById('reviews-counter').value
+    if(document.getElementById('reviews-counter'))
+        page = document.getElementById('reviews-counter').value;
     $('#load-more').click(function(){
         $.ajax({
             url: `load-reviews/${page}/`,
@@ -117,6 +118,8 @@ $(document).ready(function(){
     });
 });
 
-document.querySelector("#review-link").onclick = () => {
-    document.getElementById("tab3-link").click();
+if(document.querySelector("#review-link")){
+    document.querySelector("#review-link").onclick = () => {
+        document.getElementById("tab3-link").click();
+    }
 }
