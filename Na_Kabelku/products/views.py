@@ -48,11 +48,13 @@ def products_list(request, p=1):
     context = {
         'path_matches' : path_matches,
         'products' : page_obj, 
-        'categories' : categories, 
+        'categories' : categories,
+        'categories_products' : categories,
         'brands' : brands,
         'selected_categories' : selected_categories,
         'selected_brands' : selected_brands,
-        'path_paginator' : path_paginator
+        'path_paginator' : path_paginator,
+        'stars_range' : range(1,6),
     }
 
     return render(request, 'products/products_list.html', context)
@@ -97,9 +99,11 @@ def products_list_category(request, category, p=1):
         'products' : page_obj, 
         'brands' : brands,
         'categories' : categories,
+        'categories_products' : categories,
         'selected_brands' : selected_brands,
         'path_paginator' : path_paginator,
-        'path_category' : path_category
+        'path_category' : path_category,
+        'stars_range' : range(1,6),
     }
 
     return render(request, 'products/products_list.html', context)
@@ -200,7 +204,7 @@ def search_view(request, p=1):
 
     categories = Category.objects.all().order_by('name').annotate(product_count=Count('products'))
     brands = Brand.objects.all().order_by('name').annotate(product_count=Count('products'))
-    
+
     category_query_name = request.GET.get('category_query', '')
 
     category_id = None
@@ -233,7 +237,9 @@ def search_view(request, p=1):
         product_filter = product_filter.filter(brand__in=selected_brands)
 
     products = product_filter.order_by(sort_by)
-    
+    categories_products = Category.objects.filter(products__in=product_filter).distinct().order_by('name').annotate(product_count=Count('products'))
+    brands = Brand.objects.filter(products__in=product_filter).distinct().order_by('name').annotate(product_count=Count('products'))
+
     paginator = Paginator(products, 2)
     page_number = request.GET.get('page', p)
     page_obj = paginator.page(page_number)
@@ -242,12 +248,14 @@ def search_view(request, p=1):
         'path_matches_query' : path_matches_query,
         'products' : page_obj, 
         'categories' : categories, 
+        'categories_products' : categories_products, 
         'brands' : brands,
         'selected_categories' : selected_categories,
         'selected_brands' : selected_brands,
         'path_paginator' : path_paginator,
         'query' : query,
         'category_query_name' : category_query_name,
+        'stars_range' : range(1,6),
     }
 
     return render(request, 'products/products_list.html', context)

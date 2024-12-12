@@ -63,6 +63,12 @@ class Product(models.Model):
             
         super(Product, self).save(*args, **kwargs)
 
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews.exists():
+            return round(reviews.aggregate(models.Avg('rating'))['rating__avg'])
+        return 0
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/')

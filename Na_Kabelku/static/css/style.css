@@ -1216,6 +1216,94 @@ textarea.input {
   font-size: 14px;
 }
 
+
+/*----------------------------*\
+	Product in chart
+\*----------------------------*/
+
+.chart-details > div{
+  background-color: #FBFBFC;
+  margin-top:30px;
+  margin-bottom:50px;
+  margin-right:20px;
+  border:1px solid #E4E7ED;
+  height:100px;
+}
+
+.chart-img{
+  width:20%;
+  float:left;
+}
+
+.chart-img> img{
+  height:90px;
+  padding:10px;
+}
+
+.chart-details > div h5{
+  width: 35%;
+  float: left;
+  margin-top: 25px;
+  height: 60px;
+}
+
+.chart-quantity{
+  width:45%;
+  float:left;
+  margin-top: 20px;
+}
+
+
+.chart-quantity .input-number{
+  width:40%;
+  min-width:100px;
+  float:left;
+}
+
+.chart-quantity .input-number input{
+  text-align: center;
+  padding-left:30%;
+}
+
+.chart-quantity .qty-down{
+  left:0;
+  height:100%;
+  font-size:22px;
+  width:30px;
+}
+
+.chart-quantity .qty-up{
+  right:0;
+  height:100%;
+  font-size:22px;
+  border:1px solid #E4E7ED;
+  width:30px;
+}
+
+.chart-quantity .price-label{
+  width:60%;
+  float:left;
+  min-width:150px;
+}
+
+.chart-quantity .product-price{
+  font-size:18px;
+  float:left;
+  width:70%;
+  text-align: center;
+  margin-top:10px;
+}
+
+.chart-quantity .remove-product{
+  float:left;
+  width:30%;
+  margin-top:10px;
+}
+
+.chart-quantity .remove-product:hover{
+  cursor:pointer;
+}
+
 /*=========================================================
 	07 -> PRODUCTS PAGE
 ===========================================================*/
@@ -1922,8 +2010,10 @@ textarea.input {
 }
 
 .order-details .order-submit {
-  display: block;
   margin-top: 30px;
+  display:block;
+  max-width:230px;
+  margin:auto;
 }
 
 /*=========================================================

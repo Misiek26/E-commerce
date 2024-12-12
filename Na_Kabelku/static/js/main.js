@@ -108,13 +108,14 @@
 		$input = $this.find('input[type="number"]'),
 		up = $this.find('.qty-up'),
 		down = $this.find('.qty-down');
-
+		
 		down.on('click', function () {
 			var value = parseInt($input.val()) - 1;
-			value = value < 0 ? 0 : value;
+			value = value < 1 ? 1 : value;
 			$input.val(value);
 			$input.change();
-			updatePriceSlider($this , value)
+			updatePriceSlider($this , value);
+			
 		})
 
 		up.on('click', function () {
@@ -128,18 +129,33 @@
 			$input.change();
 			updatePriceSlider($this , value)
 		})
+
+		$input.on('change', function(){
+			var value = parseInt(this.value);
+			var maxValue = parseInt(this.max);
+
+			if(value > maxValue)
+				value = maxValue;
+
+			if(value < 1)
+				value = 1;
+
+			this.value = value;
+		})
 	});
 
 	var priceInputMax = document.getElementById('price-max'),
 			priceInputMin = document.getElementById('price-min');
-
-	priceInputMax.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value);
-	});
-
-	priceInputMin.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
-	});
+	if(priceInputMax){
+		priceInputMax.addEventListener('change', function(){
+			updatePriceSlider($(this).parent() , this.value);
+		});
+	}
+	if(priceInputMin){
+		priceInputMin.addEventListener('change', function(){
+			updatePriceSlider($(this).parent() , this.value)
+		});
+	}
 
 	function updatePriceSlider(elem , value) {
 		if ( elem.hasClass('price-min') ) {
@@ -205,10 +221,12 @@
 		const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 		const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-		document.getElementById("days").innerHTML = days;
-		document.getElementById("hours").innerHTML = hours;
-		document.getElementById("minutes").innerHTML = minutes;
-		document.getElementById("seconds").innerHTML = seconds;
+		if(document.getElementById("days")){
+			document.getElementById("days").innerHTML = days;
+			document.getElementById("hours").innerHTML = hours;
+			document.getElementById("minutes").innerHTML = minutes;
+			document.getElementById("seconds").innerHTML = seconds;
+		}
 	}
 
 	updateTimer();
