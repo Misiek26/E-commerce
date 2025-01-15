@@ -203,6 +203,7 @@ class CustomUserCreationForm(UserCreationForm):
                 phone=self.cleaned_data['phone'],
                 address=self.cleaned_data['address'],
                 zip_code=self.cleaned_data['zip_code'],
+                code = self.cleaned_data['city'],
                 rodo=True
             )
 

@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+	<!-- BREADCRUMB -->
+	<div id="breadcrumb" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="breadcrumb-header">Podsumowanie</h3>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /BREADCRUMB -->
+
+	<!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-8">
+                    <!-- Billing Details -->
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title">Dane odbiorcy</h3>
+                        </div>
+                        <div class="form-group name">
+                            <div class="first-container">
+                                <label for="first-name" class="form-label">Imię</label><br>
+                                {{form.first_name}}
+                            </div>
+                            <div class="last-container">
+                                <label for="last-name" class="form-label">Nazwisko</label><br>
+                                {{form.last_name}}
+                            </div>
+                        </div>
+                        <div class="form-group email">
+                            <label for="email" class="form-label">Email</label><br>
+                            {{form.email}}
+                        </div>
+                        <div class="form-group address">
+                            <label for="address" class="form-label">Adres</label><br>
+                            {{form.address}}
+                        </div>
+                        <div class="form-group">
+                            <div class="first-container">
+                                <label for="city" class="form-label">Miasto</label><br>
+                                {{form.city}}
+                            </div>
+                            <div class="last-container">
+                                <label for="zip-code" class="form-label">Kod pocztowy</label><br>
+                                {{form.zip_code}}
+                            </div>
+                        </div>
+                        <div class="form-group phone">
+                            <label for="tel" class="form-label">Telefon</label><br>
+                            {{form.phone}}
+                        </div>
+
+                        <!-- Order notes -->
+                        <div class="order-notes">
+                            <label for="tel" class="form-label">Wiadomość do sprzedającego</label><br>
+                            {{form.message}}
+                        </div><br>
+                        <!-- /Order notes -->
+
+                        <div class="form-group">
+                            <label class="form-label">Zamówione produkty</label><br>
+                        <!--Products-->
+                        {% for order_item in items %}
+                            {% comment %} <li>{{details.quantity}}</li> {% endcomment %}
+                            {% for product in order_item.item %}
+                                <div class="order-item">
+                                    <div class="item-img">
+                                        <img src="{{product.banner.url}}"/>
+                                    </div>
+                                    <h6>{{product.title}} ({{order_item.count}}x) - {{order_item.price}}zł</h6>
+                                    {% comment %} <a href="{% url 'payments:cart_remove' item.product.id %}">Remove</a> {% endcomment %}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        <!--/Products-->
+                        </div>
+
+                        <div class="form-group">
+                            <label>Metoda Dostawy</label><br>
+                            {% if form.shipping_method == 'pobranie' %}
+                                Kurier za pobraniem (19.99zł)
+                            {% elif form.shipping_method == 'kurier' %}
+                                Kurier DPD (17.99zł)
+                            {% elif form.shipping_method == 'inpost' %}
+                                Paczkomat Inpost (12.99zł)
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Metoda Płatności</label><br>
+                            {% if form.billing_method == 'pobranie' %}
+                                Płatność przy odbiorze
+                            {% elif form.billing_method == 'przelew'%}
+                                Przelew online
+                            {% else %}
+                                {{ form.billing_method }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mt-5">
+                            <br>
+                            <h4>Do zapłaty: {{form.total_price}}zł</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <button class="primary-btn confirm_btn" id="confirm_btn">Zatwierdź</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+{% endblock %}

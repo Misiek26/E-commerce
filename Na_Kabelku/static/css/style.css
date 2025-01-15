@@ -1218,10 +1218,10 @@ textarea.input {
 
 
 /*----------------------------*\
-	Product in chart
+	Product in cart
 \*----------------------------*/
 
-.chart-details > div{
+.cart-details > div{
   background-color: #FBFBFC;
   margin-top:30px;
   margin-bottom:50px;
@@ -1230,49 +1230,62 @@ textarea.input {
   height:100px;
 }
 
-.chart-img{
+.cart-img{
   width:20%;
   float:left;
 }
 
-.chart-img> img{
+.cart-img> img, .item-img> img{
   height:90px;
   padding:10px;
 }
 
-.chart-details > div h5{
+.order-item{
+  height:100px;
+}
+
+.order-item > h6{
+  padding-top:30px;
+  margin-left:-10px;
+}
+
+.order-item > .item-img{
+  float:left;
+}
+
+.cart-details > div h5{
   width: 35%;
   float: left;
   margin-top: 25px;
   height: 60px;
 }
 
-.chart-quantity{
+.cart-quantity{
   width:45%;
   float:left;
   margin-top: 20px;
 }
 
 
-.chart-quantity .input-number{
+.cart-quantity .input-number{
   width:40%;
   min-width:100px;
   float:left;
 }
 
-.chart-quantity .input-number input{
+.cart-quantity .input-number input{
   text-align: center;
   padding-left:30%;
 }
 
-.chart-quantity .qty-down{
+.cart-quantity .qty-down{
   left:0;
   height:100%;
   font-size:22px;
   width:30px;
 }
 
-.chart-quantity .qty-up{
+.cart-quantity .qty-up{
   right:0;
   height:100%;
   font-size:22px;
@@ -1280,13 +1293,13 @@ textarea.input {
   width:30px;
 }
 
-.chart-quantity .price-label{
+.cart-quantity .price-label{
   width:60%;
   float:left;
   min-width:150px;
 }
 
-.chart-quantity .product-price{
+.cart-quantity .product-price{
   font-size:18px;
   float:left;
   width:70%;
@@ -1294,14 +1307,18 @@ textarea.input {
   margin-top:10px;
 }
 
-.chart-quantity .remove-product{
+.cart-quantity .remove-product{
   float:left;
   width:30%;
   margin-top:10px;
 }
 
-.chart-quantity .remove-product:hover{
+.cart-quantity .remove-product:hover{
   cursor:pointer;
+}
+
+.row > .confirm_btn{
+  margin-left:30px;
 }
 
 /*=========================================================
@@ -1947,12 +1964,9 @@ textarea.input {
   margin-bottom: 30px;
 }
 
-.shiping-details {
-  margin-bottom: 30px;
-}
-
 .order-details {
-  position: relative;
+  position: sticky;
+  top:50px;
   padding: 0px 30px 30px;
   border-right: 1px solid #E4E7ED;
   border-left: 1px solid #E4E7ED;
@@ -2014,6 +2028,33 @@ textarea.input {
   display:block;
   max-width:230px;
   margin:auto;
+}
+
+.billing-details .first-container{
+  width:45%;
+  display:inline-block;
+} 
+.billing-details .last-container{
+  margin-left:5%;
+  width:45%;
+  display:inline-block;
+}
+
+.billing-details .email,
+.billing-details .address,
+.billing-details .phone,
+.billing-details .order-notes{
+  width:95.5%;
+}
+
+.shipping-details{
+  margin-top: 40px;
+}
+
+.order-details p{
+  color: red;
+  margin-top:15px;
+  text-align:center;
 }
 
 /*=========================================================

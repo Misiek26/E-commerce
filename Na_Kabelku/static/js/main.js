@@ -231,4 +231,150 @@
 
 	updateTimer();
 	setInterval(updateTimer, 1000);
+
+	//Shipping and billing methods
+
+	$("#shipping-pobranie").change(function(){
+		if(this.checked){
+			document.querySelector('#billing-pobranie').disabled = false;
+			document.querySelector('#billing-pobranie').checked = true;
+			document.querySelector('#billing-przelew').disabled = true;
+			document.querySelector('#billing-BLIK').disabled = true;
+
+			let content = this.parentNode.childNodes[3].innerHTML;
+
+			let pos_first = content.indexOf('(')+1;
+			let pos_last = content.indexOf('zł');
+			
+			let price = Number(content.slice(pos_first, pos_last));
+
+			let total_price = document.querySelector('.order-total').innerHTML;
+			total_price = total_price.slice(0, total_price.indexOf('zł'));
+			total_price = Number(total_price);
+
+			total_price += price;
+			price = content.slice(pos_first, pos_last) + "zł";
+
+			pos_first = content.indexOf('K');
+			pos_last = content.indexOf(' (');
+			
+			let shipping_method = content.slice(pos_first, pos_last);
+
+			// Reload shipping_price with current method of shipping
+			let shipping_price = document.querySelector("#shipping-price").innerHTML;
+
+			let d_efault = true;
+
+			if(!shipping_price.includes('od'))			
+				d_efault = false;
+
+			if (d_efault){
+				shipping_price = shipping_price.slice(3, shipping_price.indexOf('zł'));
+				shipping_price = Number(shipping_price);
+				total_price -= shipping_price;
+			}
+			else{
+				shipping_price = shipping_price.slice(0, shipping_price.indexOf('zł'));
+				shipping_price = Number(shipping_price);
+				total_price -= shipping_price;
+			}
+
+			document.querySelector('.order-total').innerHTML = total_price + 'zł';
+			document.querySelector('#input_total_price').value = total_price;
+			document.querySelector("#shipping-price").innerHTML = price;
+			document.querySelector("#shipping-name").innerHTML = shipping_method;
+		}
+	})
+
+	$("#shipping-inpost, #shipping-kurier").change(function(){
+		let billing_pobranie = document.querySelector('#billing-pobranie');
+
+		if(this.checked){
+			document.querySelector('#billing-przelew').disabled = false;
+			document.querySelector('#billing-BLIK').disabled = false;
+			document.querySelector('#billing-pobranie').disabled = true;
+
+			if(billing_pobranie.checked){
+				document.querySelector('#billing-przelew').checked = true;
+			}
+
+			let content = this.parentNode.childNodes[3].innerHTML;
+
+			let pos_first = content.indexOf('(')+1;
+			let pos_last = content.indexOf('zł');
+			
+			let price = Number(content.slice(pos_first, pos_last));
+
+			let total_price = document.querySelector('.order-total').innerHTML;
+			total_price = total_price.slice(0, total_price.indexOf('zł'));
+			total_price = Number(total_price);
+
+			total_price += price;
+			price = content.slice(pos_first, pos_last) + "zł";
+
+			if(content.includes('K'))
+				pos_first = content.indexOf('K');
+			else
+				pos_first = content.indexOf('P')
+
+			pos_last = content.indexOf(' (');
+			
+			let shipping_method = content.slice(pos_first, pos_last);
+
+			// Reload shipping_price with current method of shipping
+			let shipping_price = document.querySelector("#shipping-price").innerHTML;
+
+			let d_efault = true;
+
+			if(!shipping_price.includes('od'))			
+				d_efault = false;
+
+			if (d_efault){
+				shipping_price = shipping_price.slice(3, shipping_price.indexOf('zł'));
+				shipping_price = Number(shipping_price);
+				total_price -= shipping_price;
+			}
+			else{
+				shipping_price = shipping_price.slice(0, shipping_price.indexOf('zł'));
+				shipping_price = Number(shipping_price);
+				total_price -= shipping_price;
+			}
+
+			document.querySelector('.order-total').innerHTML = total_price + 'zł';
+			document.querySelector('#input_total_price').value = total_price;
+			document.querySelector("#shipping-price").innerHTML = price;
+			document.querySelector("#shipping-name").innerHTML = shipping_method;
+		}
+	})
+
+	$(".order-submit").click(function(event) {
+        let valid = true;
+
+        // Check if a shipping method is selected
+        const shippingOptions = document.querySelectorAll('input[name="shipping_method"]');
+        const shippingSelected = Array.from(shippingOptions).some(option => option.checked);
+        if (!shippingSelected) {
+            document.getElementById('order-error').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('order-error').style.display = 'none';
+        }
+
+        // Check if a billing method is selected
+        const billingOptions = document.querySelectorAll('input[name="billing_method"]');
+        const billingSelected = Array.from(billingOptions).some(option => option.checked);
+        if (!billingSelected) {
+            document.getElementById('order-error').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('order-error').style.display = 'none';
+        }
+
+        // Prevent form submission if validation fails
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+
+	
 })(jQuery);

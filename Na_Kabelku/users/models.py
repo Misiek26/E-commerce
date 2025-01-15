@@ -8,6 +8,7 @@ class ClientProfile(models.Model):
     phone = models.CharField(max_length=9, unique=True)
     address = models.TextField()
     zip_code = models.CharField(max_length=6)
+    city = models.CharField(max_length=30)
     rodo = models.BooleanField(default=False)
 
     def __str__(self):

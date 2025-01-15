@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Quantity input changes event
-    $('.chart-details input').change(function() {
+    $('.cart-details input').change(function() {
         let quantity = this.value;
         let id = this.id.substring(14);
 
@@ -9,7 +9,7 @@ $(document).ready(function() {
             method: "GET",
             success: function(data) {
                 // Update total_price of product
-                document.querySelector(`#chart-item-${id} .product-price`).innerHTML = data.price + "zł";
+                document.querySelector(`#cart-item-${id} .product-price`).innerHTML = data.price + "zł";
 
                 let item = document.querySelector(`#order-item-${id}`).childNodes[1];
                 let endQuantityIndex = item.innerHTML.indexOf('x');
@@ -32,7 +32,7 @@ $(document).ready(function() {
 
 
     // Quantity buttons event
-    $('.chart-details span').click(function() {
+    $('.cart-details span').click(function() {
         let quantity = this.parentElement.children[1].value;
         let id = this.parentElement.children[1].id.substring(14);
 
@@ -41,7 +41,7 @@ $(document).ready(function() {
             method: "GET",
             success: function(data) {
                 // Update total_price of product
-                document.querySelector(`#chart-item-${id} .product-price`).innerHTML = data.price + "zł";
+                document.querySelector(`#cart-item-${id} .product-price`).innerHTML = data.price + "zł";
 
                 let item = document.querySelector(`#order-item-${id}`).childNodes[1];
                 let endQuantityIndex = item.innerHTML.indexOf('x');
@@ -49,7 +49,6 @@ $(document).ready(function() {
                 let itemPrice = document.querySelector(`#order-item-${id}`).childNodes[3];
                 itemPrice.innerHTML = data.price + "zł";
                 document.querySelector(`.order-total`).innerHTML = data.cart_price + "zł"; 
-                console.log(data.cart_price)
                 //TODO
                 // if (quantity != 0)
                 item.innerHTML = quantity + itemName;

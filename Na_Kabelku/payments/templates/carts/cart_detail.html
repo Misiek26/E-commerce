@@ -24,17 +24,17 @@
 			<!-- row -->
 			<div class="row">
 
-				<div class="col-md-8">
-					<!-- Chart Details -->
-					<div class="chart-details">
-						{% for item in chart %}
+				<div class="col-md-8 row">
+					<!-- cart Details -->
+					<div class="cart-details">
+						{% for item in cart %}
 							{% comment %} <li>{{details.quantity}}</li> {% endcomment %}
-							<div id="chart-item-{{ item.product.id }}">
-								<div class="chart-img">
+							<div id="cart-item-{{ item.product.id }}">
+								<div class="cart-img">
 									<img src="{{item.product.banner.url}}" />
 								</div>
 								<h5><a href="{% url 'products:page' slug=item.product.slug %}">{{ item.product.title }}</a></h5>
-								<div class="chart-quantity">
+								<div class="cart-quantity">
 									<div class="qty-label">
 										<div class="input-number">
 											<span class="qty-down">-</span>
@@ -44,16 +44,16 @@
 									</div>
 									<div class="price-label">
 										<h3 class="product-price">{{item.total_price}}zł</h3>
-										<h4 class="remove-product"><a href="{% url 'payments:chart_remove' item.product.id %}">&#10060</a></h4>
+										<h4 class="remove-product"><a href="{% url 'payments:cart_remove' item.product.id %}">&#10060</a></h4>
 									</div>
 									{% comment %} <p> - Quantity: {{ item.quantity }}
 									- Total: ${{ item.total_price }}</p> {% endcomment %}
 								</div>
-								{% comment %} <a href="{% url 'payments:chart_remove' item.product.id %}">Remove</a> {% endcomment %}
+								{% comment %} <a href="{% url 'payments:cart_remove' item.product.id %}">Remove</a> {% endcomment %}
 							</div>
 						{% endfor %}
 					</div>
-					<!-- /Chart Details -->
+					<!-- /cart Details -->
 				</div>
 
 				<!-- Order Details -->
@@ -67,7 +67,7 @@
 							<div><strong>CENA</strong></div>
 						</div>
 						<div class="order-products">
-							{% for item in chart %}
+							{% for item in cart %}
 								<div class="order-col" id="order-item-{{item.product.id}}">
 									<div>{{item.quantity}}x	{{item.product.title}}</div>
 									<div>{{item.total_price}}zł</div>
@@ -75,7 +75,7 @@
 							{% endfor %}
 						</div>
 						<div class="order-col">
-							<div>Dostawa od</div>
+							<div><strong>Dostawa od</strong></div>
 							<div><strong>12.99zł</strong></div>
 						</div>
 						<div class="order-col">
@@ -84,7 +84,7 @@
 						</div>
 					</div>
 					
-					<a href="#" class="primary-btn order-submit">Dostawa i płatność</a>
+					<a href="/payments/order" class="primary-btn order-submit">Dostawa i płatność</a>
 				</div>
 				<!-- /Order Details -->
 			</div>

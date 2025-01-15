@@ -1,0 +1,185 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+	<!-- BREADCRUMB -->
+	<div id="breadcrumb" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="breadcrumb-header">Dostawa i płatność</h3>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /BREADCRUMB -->
+
+	<!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!--form-->
+            <form class="row" method="post" action="/payments/summary/">
+                {% csrf_token %}
+                <div class="col-md-7">
+                    <!-- Billing Details -->
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title">Dane odbiorcy</h3>
+                        </div>
+                        <div class="form-group name">
+                            <div class="first-container">
+                                <label for="first-name" class="form-label">Imię</label>
+                                {{form.first_name}}
+                            </div>
+                            <div class="last-container">
+                                <label for="last-name" class="form-label">Nazwisko</label>
+                                {{form.last_name}}
+                            </div>
+                        </div>
+                        <div class="form-group email">
+                            <label for="email" class="form-label">Email</label><br>
+                            {{form.email}}
+                        </div>
+                        <div class="form-group address">
+                            <label for="address" class="form-label">Adres</label><br>
+                            {{form.address}}
+                        </div>
+                        <div class="form-group">
+                            <div class="first-container">
+                                <label for="city" class="form-label">Miasto</label><br>
+                                {{form.city}}
+                            </div>
+                            <div class="last-container">
+                                <label for="zip-code" class="form-label">Kod pocztowy</label><br>
+                                {{form.zip_code}}
+                            </div>
+                        </div>
+                        <div class="form-group phone">
+                            <label for="tel" class="form-label">Telefon</label><br>
+                            {{form.phone}}
+                        </div>
+
+                        <!-- Order notes -->
+                        <div class="order-notes">
+                            <label for="tel" class="form-label">Wiadomość do sprzedającego</label><br>
+                            {{form.message}}
+                        </div>
+                        <div class="input-checkbox">
+                            {{form.create_account}}
+                            <label for="create-account">
+                                <span></span>
+                                Utwórz konto
+                            </label>
+                        </div>
+                        <!-- /Order notes -->
+                        
+                        <!--TODO-->
+                        {% comment %} <div class="form-group">
+                            <div class="input-checkbox">
+                                <input type="checkbox" id="create-account">
+                                <label for="create-account">
+                                    <span></span>
+                                    Utwórz konto
+                                </label>
+                                <div class="caption">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+                                    <input class="input" type="password" name="password" placeholder="Enter Your Password">
+                                </div>
+                            </div>
+                        </div> {% endcomment %}
+                    </div>
+                    <!-- /Billing Details -->
+
+                    <!-- Shipping Details -->
+                    <div class="shipping-details">
+                        <div class="section-title">
+                            <h3 class="title">Metody Dostawy</h3>
+                        </div>
+                        <div class="shipping-method">
+                            {% for value, label in form.fields.shipping_method.choices %}
+                                <div class="input-radio">
+                                    <input type="radio" name="shipping_method" value="{{ value }}" id="shipping-{{ value }}">
+                                    <label for="shipping-{{ value }}">
+                                        <span></span>
+                                        {{ label }}
+                                    </label>
+                                    {% if value == "inpost" %}
+                                        <div class="caption">
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- /Shipping Details -->
+
+                    <!-- Payment Details -->
+                    <div class="payment-details">
+                        <div class="section-title">
+                            <h3 class="title">Metody Płatności</h3>
+                        </div>
+                        <div class="payment-method">
+                            {% for value, label in form.fields.billing_method.choices %}
+                                <div class="input-radio">
+                                    <input type="radio" name="billing_method" value="{{ value }}" id="billing-{{ value }}">
+                                    <label for="billing-{{ value }}">
+                                        <span></span>
+                                        {{ label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {{form.billingDetails.errors}}
+                    <!-- /Payment Details -->
+                </div>
+
+                <!-- Order Details -->
+                <div class="col-md-5 order-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Twoje zamówienie</h3>
+                    </div>
+                    <div class="order-summary">
+                        <div class="order-col">
+                            <div><strong>PRODUKT</strong></div>
+                            <div><strong>CENA</strong></div>
+                        </div>
+                        <div class="order-products">
+                            {% for item in cart %}
+                                <div class="order-col" id="order-item-{{item.product.id}}">
+                                    <div>{{item.quantity}}x	{{item.product.title}}</div>
+                                    <input type="hidden" name="item-{{item.product.id}}" value="count-{{item.quantity}}"/>
+                                    <div>{{item.total_price}}zł</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="order-col">
+                            <div><strong>DOSTAWA</strong></div>
+                            <div><strong></strong></div>
+                        </div>
+                        <div class="order-col">
+                            <div id="shipping-name">-</div>
+                            <div id="shipping-price">od 12.99zł</div>
+                        </div>
+                        <div class="order-col">
+                            <div><strong>RAZEM</strong></div>
+                            <div><strong class="order-total">{{cart_price}}zł</strong></div>
+                        </div>
+                        <input type="hidden" name="total_price" id="input_total_price" value="{{cart_price}}"/>
+                    </div>
+                    <button class="primary-btn order-submit">Podsumowanie</button>
+                    <p style="display:none" id="order-error">Wybierz metodę płatności oraz dostawy.</p>
+                </div>
+                <!-- /Order Details -->
+            </form>
+            <!--/form-->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+{% endblock %}
