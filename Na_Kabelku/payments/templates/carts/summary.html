@@ -118,10 +118,79 @@
                             <h4>Do zapłaty: {{form.total_price}}zł</h4>
                         </div>
                     </div>
+
+                    <form id="orderForm" action="/payments/order/confirm/" method="POST">
+                        <div id="confirm-form-hidden">
+
+                            <!-- CSRF Token (for Django security) -->
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     
-                    <div class="row">
-                        <button class="primary-btn confirm_btn" id="confirm_btn">Zatwierdź</button>
-                    </div>
+                            <label for="first_name">Imię:</label>
+                            <input type="text" name="first_name" value="{{form.first_name}}" required><br><br>
+                    
+                            <label for="last_name">Nazwisko:</label>
+                            <input type="text" name="last_name" value="{{form.last_name}}" required><br><br>
+                    
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" value="{{form.email}}" required><br><br>
+                    
+                            <label for="address">Adres:</label>
+                            <input type="text" name="address" value="{{form.address}}" required><br><br>
+                    
+                            <label for="city">Miasto:</label>
+                            <input type="text" name="city" value="{{form.city}}" required><br><br>
+                    
+                            <label for="zip_code">Kod pocztowy:</label>
+                            <input type="text" name="zip_code" value="{{form.zip_code}}" required><br><br>
+                    
+                            <label for="phone">Telefon:</label>
+                            <input type="tel" name="phone" value="{{form.phone}}" required><br><br>
+                    
+                            <label for="message">Wiadomość do sprzedającego:</label>
+                            <textarea name="message">{{form.message}}</textarea><br><br>
+                    
+                            <label for="shipping_method">Metoda Dostawy:</label>
+                            <select name="shipping_method">
+                                {%if form.shipping_method == "kurier"%}
+                                    <option value="kurier" selected>Kurier DPD</option>
+                                {%elif form.shipping_method == "pobranie"%}    
+                                    <option value="pobranie" selected>Kurier za pobraniem</option>
+                                {%elif form.shipping_method == "inpost"%}
+                                    <option value="inpost" selected>Paczkomat Inpost</option>
+                                {%else%}
+                                    -
+                                {%endif%}
+                            </select><br><br>
+                    
+                            <label for="billing_method">Metoda Płatności:</label>
+                            <select name="billing_method">
+                                {%if form.billing_method == "BLIK"%}
+                                    <option value="BLIK" selected>BLIK</option>
+                                {%elif form.billing_method == "przelew"%}    
+                                    <option value="przelew" selected>Przelew online</option>
+                                {%elif form.billing_method == "pobranie"%}
+                                    <option value="pobranie" selected>Płatność przy odbiorze</option>
+                                {%else%}
+                                    -
+                                {%endif%}
+                            </select><br><br>
+                    
+                            <h3>Zamówione Produkty:</h3>
+                            {% for order_item in items %}
+                                {% comment %} <li>{{details.quantity}}</li> {% endcomment %}
+                                {% for product in order_item.item %}
+                                    <input type="number" name="item-{{product.id}}" value="{{order_item.count}}" min="1">
+                                {% endfor %}
+                            {% endfor %}
+                    
+                            <input type="hidden" name="total_price" value="{{form.total_price}}">
+                        </div>
+
+                        <div class="row">
+                            <button class="primary-btn confirm_btn" id="confirm_btn">Zatwierdź</button>
+                        </div>
+                    </form>
+                    
                 </div>
                 <div class="col-md-3">
                 </div>

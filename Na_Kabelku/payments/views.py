@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import redirect, get_object_or_404, render
@@ -5,7 +6,7 @@ from users.models import ClientProfile
 from payments.forms.BillingDetailsForm import BillingDetailsForm
 from products.models import Category, Product
 from django.db.models import Count
-from .models import Cart, CartItem
+from .models import Cart, CartItem, Order, OrderItem
 import json
 
 # Create your views here.
@@ -164,7 +165,6 @@ def order(request):
 
 def summary(request):
     categories = Category.objects.all().order_by('name').annotate(product_count=Count('products'))
-    is_anymous = request.user.is_anonymous
 
     form = request.POST
 
@@ -186,6 +186,67 @@ def summary(request):
         'categories' : categories,
         'form' : form,
         'items': items,
+    }
+
+    return render(request, 'carts/summary.html', context)
+
+def confirm_order(request):
+    form = request.POST
+    print(form)
+    user = request.user if request.user.is_authenticated else None
+
+    order = Order.objects.create(
+        user = user,
+
+        guest_first_name = form.get('first_name'),
+        guest_last_name = form.get('last_name'),
+        guest_email = form.get('email'),
+        guest_address = form.get('address'),
+        guest_city = form.get('city'),
+        guest_zip_code = form.get('zip_code'),
+        guest_phone = form.get('phone'),
+        guest_message = form.get('message'),
+
+        billing_method = form.get('billing_method'),
+        shipping_method = form.get('shipping_method'),
+
+        status = 'ORDERED',
+
+        total_amount = form.get('total_price')
+    )
+
+    for key in form:
+        if key.startswith('item-'):
+            item_id = key.split('-')[1]
+            item_count = request.POST.get(key)
+            product_obj = get_object_or_404(Product, id=item_id)
+            product_price = product_obj.price * Decimal(item_count)
+            ordered_item = OrderItem.objects.create(
+                product = product_obj, 
+                quantity = item_count, 
+                price = product_price
+            )
+            order.order_items.add(ordered_item)
+
+    order.save()
+
+    # items=[]
+
+    # for key, value in form.items():
+    #     if key.startswith('item-'):
+    #         item_id = key.split('-')[1]
+    #         count = value.split('-')[1]
+    #         item = Product.objects.filter(id=item_id)
+
+    #         price = 0.0
+    #         for product in item:
+    #             price = product.price * int(count)
+                
+    #         items.append({'item': item, 'count': count, 'price': price})
+
+    context = {
+        'form' : form,
+        # 'items': items,
     }
 
     return render(request, 'carts/summary.html', context)

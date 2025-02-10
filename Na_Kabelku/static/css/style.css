@@ -2121,6 +2121,10 @@ textarea.input {
   border-radius: 40px;
 }
 
+#confirm-form-hidden{
+  display:none;
+}
+
 .newsletter .newsletter-follow {
   text-align: center;
 }
